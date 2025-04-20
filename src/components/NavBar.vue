@@ -8,7 +8,7 @@
        <el-input
          placeholder="搜索文章"
          size="small"
-         prefix-icon="el-icon-search"
+         prefix-icon="Search"
          class="search-box"
        />
  
@@ -18,23 +18,30 @@
          @select="handleSelect"
          router 
          :default-active="$route.path"
+         :ellipsis="false"
        >
          <el-menu-item index="/home">首页</el-menu-item>
-         <el-menu-item index="#">关于</el-menu-item>
          <el-menu-item index="#">设置</el-menu-item>
+         <el-menu-item index="#">联系我</el-menu-item>
          <el-menu-item index="#">暗黑模式</el-menu-item>
        </el-menu>
      </div>
  
-     <!-- 右侧图标 -->
+     <!-- 右侧头像及下拉菜单 -->
      <div class="nav-right">
-       <el-tooltip content="RSS订阅">
-         <el-button type="link" icon="el-icon-sugar" />
-       </el-tooltip>
-       <el-tooltip content="设置">
-         <el-button type="link" icon="el-icon-setting" />
-       </el-tooltip>
-       <el-avatar size="small" src="https://your-avatar.jpg" />
+       <el-dropdown trigger="click">
+         <el-avatar size="small" :src="userProfile.avatar" />
+         <template #dropdown>
+           <el-dropdown-menu>
+             <el-dropdown-item @click="handleUserProfile">
+               <el-icon><User /></el-icon> 个人信息
+             </el-dropdown-item>
+             <el-dropdown-item @click="handleLogout">
+               <el-icon><SwitchButton /></el-icon> 退出登录
+             </el-dropdown-item>
+           </el-dropdown-menu>
+         </template>
+       </el-dropdown>
      </div>
    </el-header>
  </template>
@@ -42,13 +49,44 @@
  <script setup>
  import { ref } from 'vue'
  import { useRouter } from 'vue-router'
+ import { Search, User, SwitchButton } from '@element-plus/icons-vue'
+ import { userProfile } from '../stores/userProfile'
+ import { useAuth } from '../stores/auth'
+ import { ElMessageBox } from 'element-plus'
  
  const router = useRouter()
+ const auth = useAuth()
  const activeIndex = ref('/')
  
  const handleSelect = (key) => {
    activeIndex.value = key
    router.push(key)
+ }
+ 
+ const handleUserProfile = () => {
+   router.push('/profile')
+ }
+ 
+ const handleLogout = async () => {
+   try {
+     await ElMessageBox.confirm(
+       '确定要退出登录吗？',
+       '提示',
+       {
+         confirmButtonText: '确定',
+         cancelButtonText: '取消',
+         type: 'warning'
+       }
+     )
+     
+     // 执行登出
+     auth.logout()
+     
+     // 跳转到登录页
+     router.push('/login')
+   } catch {
+     // 用户取消了确认
+   }
  }
  </script>
  
@@ -66,22 +104,45 @@
  .logo {
    font-size: 20px;
    font-weight: bold;
+   flex-shrink: 0;
+   margin-right: 20px;
  }
  .nav-center {
    display: flex;
-   flex-direction: row-reverse;
    align-items: center;
+   justify-content: space-between;
    flex: 1;
    margin: 0 40px;
+   overflow: visible;
+   flex-direction: row-reverse
  }
  .search-box {
    width: 200px;
-   margin-right: 20px;
+   margin-left: 20px;
+   flex-shrink: 0;
  }
  .nav-right {
    display: flex;
    align-items: center;
    gap: 12px;
+   flex-shrink: 0;
+   cursor: pointer;
+   margin-left: 20px;
+ }
+ .el-dropdown-menu__item {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+ }
+ .el-menu-demo {
+   border-bottom: none !important;
+   flex-grow: 1;
+   white-space: nowrap;
+   min-width: 400px;
+ }
+ .el-menu-item {
+   font-size: 14px;
+   padding: 0 15px !important;
  }
  </style>
  
