@@ -1,17 +1,17 @@
 import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs'
 import {createRouter,createWebHistory } from 'vue-router'
 
+import AppLayout from '../components/AppLayout.vue'
+import HomeContent from '../components/HomeContent.vue'
+
 const routes = [
     {
         path:'/',
-        name:'Home',
-        component:() => import('@/views/HomeView.vue')
-    },
-    {
-        path:'/post/:id',
-        name:'Post',
-        component:() => import('@/views/Postview.vue'),
-        props:true
+        component:AppLayout,
+        children:[
+            {path:'',component:HomeContent},
+            {path:'home',component:HomeContent}
+        ]
     }
 ]
 
