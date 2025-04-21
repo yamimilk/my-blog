@@ -143,22 +143,30 @@ const activities = ref([
 }
 
 .hover-card {
+  /* 保留原样式 */
   text-align: center;
   padding: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 12px;
+  border-radius: 16px; /* 稍微大一点的圆角 */
   background-color: var(--card-background);
   position: relative;
   overflow: hidden;
-  border: 1px solid transparent;
+  border: 1px solid rgba(0, 0, 0, 0.05); /* 添加浅浅边框 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 基础阴影 */
+
+  /* 增强立体感 */
+  backdrop-filter: blur(4px);
+  background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(240,240,240,0.9));
 }
 
 .hover-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-color);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12); /* 更浓阴影 */
+  border-color: var(--primary-color); /* hover 时强调边框 */
+  background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(240,240,240,1));
 }
+
 
 .hover-card:hover .card-link {
   color: var(--primary-color);
@@ -177,7 +185,7 @@ const activities = ref([
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(var(--primary-color-rgb), 0.05) 50%, rgba(var(--primary-color-rgb), 0.05) 100%);
-  opacity: 0;
+  /* opacity: 0; */
   transition: opacity 0.3s ease;
   z-index: 0;
 }
