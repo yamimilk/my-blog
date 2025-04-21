@@ -7,6 +7,9 @@ import Video from '../components/VideoList.vue'
 import ArticleList from '../components/ArticleList.vue'
 import ProfileEdit from '../components/ProfileEdit.vue'
 import Login from '../views/Login.vue'
+import Settings from '../views/Settings.vue'
+import Todo from '../views/Todo.vue'
+import Contact from '../views/Contact.vue'
 
 const routes = [
     {
@@ -25,7 +28,10 @@ const routes = [
             { path: 'gallery', component: Gallery },
             { path: 'videos', component: Video },
             { path: 'article', component: ArticleList },
-            { path: 'profile', component: ProfileEdit }
+            { path: 'profile', component: ProfileEdit },
+            { path: 'settings', component: Settings },
+            { path: 'todo', component: Todo },
+            { path: 'contact', component: Contact }
         ]
     }
 ]

@@ -1,10 +1,15 @@
 /* 定义亮色主题变量 */
 :root {
   --primary-color: #409eff;
+  --primary-color-rgb: 64, 158, 255;
   --success-color: #67c23a;
+  --success-color-rgb: 103, 194, 58;
   --warning-color: #e6a23c;
+  --warning-color-rgb: 230, 162, 60;
   --danger-color: #f56c6c;
+  --danger-color-rgb: 245, 108, 108;
   --info-color: #909399;
+  --info-color-rgb: 144, 147, 153;
 
   --background-color: #ffffff;
   --text-color: #333333;
@@ -19,10 +24,15 @@
 /* 定义暗色主题变量 */
 :root.dark {
   --primary-color: #5dafff;
+  --primary-color-rgb: 93, 175, 255;
   --success-color: #85ce61;
+  --success-color-rgb: 133, 206, 97;
   --warning-color: #ebb563;
+  --warning-color-rgb: 235, 181, 99;
   --danger-color: #fa7a7a;
+  --danger-color-rgb: 250, 122, 122;
   --info-color: #a6a9ad;
+  --info-color-rgb: 166, 169, 173;
 
   --background-color: #1a1a1a;
   --text-color: #f0f0f0;

@@ -3,28 +3,28 @@
     <!-- 主内容卡片区域 -->
     <el-row :gutter="20" class="main-grid">
       <el-col :span="8">
-        <el-card class="hover-card" shadow="hover">
+        <el-card class="hover-card" shadow="hover" @click="navigateTo('/article')">
           <div class="card-content">
             <el-icon class="card-icon"><Document /></el-icon>
-            <router-link to="/article" class="card-link">文章合集</router-link>
+            <div class="card-link">文章合集</div>
             <p class="card-desc">记录技术思考与生活感悟</p>
           </div>
         </el-card>
       </el-col>
       <el-col :span="8">
-        <el-card class="hover-card" shadow="hover">
+        <el-card class="hover-card" shadow="hover" @click="navigateTo('/gallery')">
           <div class="card-content">
             <el-icon class="card-icon"><Picture /></el-icon>
-            <router-link to="/gallery" class="card-link">我的画廊</router-link>
+            <div class="card-link">我的画廊</div>
             <p class="card-desc">分享生活中的美好瞬间</p>
           </div>
         </el-card>
       </el-col>
       <el-col :span="8">
-        <el-card class="hover-card" shadow="hover">
+        <el-card class="hover-card" shadow="hover" @click="navigateTo('/videos')">
           <div class="card-content">
             <el-icon class="card-icon"><VideoPlay /></el-icon>
-            <router-link to="/videos" class="card-link">收藏视频</router-link>
+            <div class="card-link">收藏视频</div>
             <p class="card-desc">精选值得一看的视频内容</p>
           </div>
         </el-card>
@@ -72,6 +72,14 @@
 <script setup>
 import { Document, Picture, VideoPlay, Edit, Calendar } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// 导航函数
+const navigateTo = (path) => {
+  router.push(path)
+}
 
 // 示例日志数据
 const activities = ref([
@@ -141,14 +149,78 @@ const activities = ref([
   transition: all 0.3s ease;
   border-radius: 12px;
   background-color: var(--card-background);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
 }
 
 .hover-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.hover-card:hover .card-link {
+  color: var(--primary-color);
+}
+
+.hover-card:active {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hover-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(var(--primary-color-rgb), 0.05) 50%, rgba(var(--primary-color-rgb), 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.hover-card:hover::before {
+  opacity: 1;
+}
+
+/* 添加点击波纹效果 */
+.hover-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(var(--primary-color-rgb), 0.3);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  z-index: 0;
+}
+
+.hover-card:active::after {
+  opacity: 1;
+  animation: ripple 0.4s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0) translate(-50%, -50%);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(30, 30) translate(-50%, -50%);
+    opacity: 0;
+  }
 }
 
 .card-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -167,6 +239,25 @@ const activities = ref([
   color: var(--text-color);
   text-decoration: none;
   transition: color 0.3s ease;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+.card-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--primary-color);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.hover-card:hover .card-link::after {
+  width: 70%;
 }
 
 .card-link:hover {
