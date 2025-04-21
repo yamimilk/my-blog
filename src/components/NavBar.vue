@@ -28,6 +28,7 @@
         <el-menu-item index="/settings">设置</el-menu-item>
         <el-menu-item index="/contact">联系我</el-menu-item>
         <el-menu-item index="/todo">待办日程</el-menu-item>
+        <el-menu-item index="#">上传日志</el-menu-item>
         <el-menu-item index="#" @click="themeStore.toggleDarkMode">
           <el-icon v-if="themeStore.isDark">
             <Moon />
