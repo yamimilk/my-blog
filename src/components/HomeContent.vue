@@ -6,7 +6,7 @@
         <el-card class="hover-card" shadow="hover">
           <div class="card-content">
             <el-icon class="card-icon"><Document /></el-icon>
-            <router-link to="/articles" class="card-link">文章合集</router-link>
+            <router-link to="/article" class="card-link">文章合集</router-link>
             <p class="card-desc">记录技术思考与生活感悟</p>
           </div>
         </el-card>
@@ -124,9 +124,10 @@ const activities = ref([
 
 <style scoped>
 .home-content-wrapper {
-  background: #f5f7fa;
+  background-color: var(--background-color);
   padding: 40px;
   min-height: calc(100vh - 120px);
+  transition: background-color 0.3s;
 }
 
 .main-grid {
@@ -139,7 +140,7 @@ const activities = ref([
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 12px;
-  background: #ffffff;
+  background-color: var(--card-background);
 }
 
 .hover-card:hover {
@@ -156,25 +157,25 @@ const activities = ref([
 
 .card-icon {
   font-size: 36px;
-  color: #409EFF;
+  color: var(--primary-color);
   margin-bottom: 8px;
 }
 
 .card-link {
   font-size: 24px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-color);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .card-link:hover {
-  color: #409EFF;
+  color: var(--primary-color);
 }
 
 .card-desc {
   font-size: 14px;
-  color: #909399;
+  color: var(--info-color);
   margin: 0;
 }
 
@@ -188,7 +189,7 @@ const activities = ref([
   width: 80%;
   border-radius: 12px;
   padding: 20px 30px;
-  background: #fffbe6;
+  background-color: var(--card-background);
   border: none;
 }
 
@@ -201,12 +202,12 @@ const activities = ref([
 
 .memo-icon {
   font-size: 20px;
-  color: #E6A23C;
+  color: var(--warning-color);
 }
 
 .memo-text {
   font-size: 16px;
-  color: #606266;
+  color: var(--text-color);
 }
 
 /* 日志区域样式 */
@@ -219,7 +220,7 @@ const activities = ref([
   width: 80%;
   border-radius: 12px;
   padding: 20px;
-  background: #ffffff;
+  background-color: var(--card-background);
 }
 
 .log-header {
@@ -231,13 +232,13 @@ const activities = ref([
 
 .log-title-icon {
   font-size: 22px;
-  color: #409EFF;
+  color: var(--primary-color);
 }
 
 .log-title {
   font-size: 18px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-color);
   margin: 0;
 }
 

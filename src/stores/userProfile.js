@@ -6,9 +6,9 @@ const userProfile = reactive({
   avatar: '',
   signature: '我向往的不是岸',
   github: 'https://github.com/yamimilk',
-  gitee: 'https://gitee.com/yourusername',
-  email: 'your.email@example.com',
-  netease: 'https://music.163.com/#/user/home?id=yourid'
+  gitee: 'https://gitee.com/yamimilk',
+  email: '1989783329@qq.com',
+  netease: 'https://music.163.com/#/user/home?id=5154981743'
 })
 
 // 初始化函数

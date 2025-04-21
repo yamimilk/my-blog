@@ -4,7 +4,7 @@
     <NavBar />
       <!-- 左侧竖栏 -->
       <el-container style="flex: 1;">
-        <el-aside width="260px" style="background-color: #f9f9f9; padding: 20px;">
+        <el-aside width="260px" class="sidebar">
         <!-- 头像卡片 -->
         <el-card shadow="hover" class="mb-4">
           <div style="text-align: center;">
@@ -12,20 +12,20 @@
               :size="100"
               :src="userProfile.avatar"
             />
-            <h3 style="margin-top: 10px;">{{ userProfile.nickname }}</h3>
-            <p style="color: #666;">{{ userProfile.signature }}</p>
+            <h3 class="profile-name">{{ userProfile.nickname }}</h3>
+            <p class="profile-signature">{{ userProfile.signature }}</p>
           </div>
           <el-divider />
           <div style="display: flex; justify-content: space-around;">
-            <div>日志<br /><strong>6</strong></div>
-            <div>浏览量<br /><strong>17</strong></div>
-            <div>分类<br /><strong>16</strong></div>
+            <div class="profile-stat">日志<br /><strong>6</strong></div>
+            <div class="profile-stat">浏览量<br /><strong>17</strong></div>
+            <div class="profile-stat">分类<br /><strong>16</strong></div>
           </div>
           <el-button type="primary" round size="small" style="margin-top: 10px; width: 100%;" @click="goToProfile">编辑资料</el-button>
         </el-card>
         
         <!-- 社交链接区域 -->
-        <el-card shadow="hover" class="social-links">
+        <el-card shadow="hover" class="social-links-card">
           <div class="social-links">
             <a v-if="userProfile.github" :href="userProfile.github" target="_blank" class="social-link">
               <el-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></el-icon>
@@ -49,9 +49,9 @@
         <!-- 公告栏 -->
         <el-card shadow="hover">
           <template #header>
-            <span>📢 公告板</span>
+            <span class="announcement-title">📢 公告板</span>
           </template>
-          <ul>
+          <ul class="announcement-list">
             <li>使用 https 协议</li>
             <li>博客已支持 RSS 订阅</li>
             <li>博客正式上线啦~</li>
@@ -60,7 +60,7 @@
       </el-aside>
         
       <!-- 主内容 -->
-      <el-main style="background: #f4f4f4; padding: 24px;">
+      <el-main class="main-content">
         <router-view />
       </el-main>
       </el-container>
@@ -95,42 +95,42 @@
     margin-bottom: 16px;
   }
 
-  .social-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .footer-bar {
-    background: #222;
-    color: #ccc;
-    text-align: center;
+  .sidebar {
+    background-color: var(--card-background);
     padding: 20px;
-    font-size: 14px;
+    border-right: 1px solid var(--border-color);
+    transition: background-color 0.3s;
   }
 
-  .memo-area {
-    background: #fff;
-    border-radius: 40px;
-    padding: 30px;
-    text-align: center;
-    font-size: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 40px;
+  .profile-name {
+    margin-top: 10px;
+    color: var(--text-color);
   }
-  
+
+  .profile-signature {
+    color: var(--info-color);
+  }
+
+  .profile-stat {
+    color: var(--text-color);
+  }
+
+  .social-links-card {
+    margin-bottom: 16px;
+  }
+
   .social-links {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
   }
-  
+
   .social-link {
     display: flex;
     align-items: center;
     gap: 5px;
     text-decoration: none;
-    color: #409EFF;
+    color: var(--primary-color);
     padding: 8px 10px;
     border-radius: 4px;
     transition: all 0.3s;
@@ -138,13 +138,48 @@
   }
   
   .social-link:hover {
-    background-color: #f0f9ff;
+    background-color: var(--hover-background);
   }
   
   .icon {
     width: 16px;
     height: 16px;
     fill: currentColor;
+  }
+
+  .announcement-title {
+    color: var(--text-color);
+  }
+
+  .announcement-list {
+    color: var(--text-color);
+    padding-left: 20px;
+  }
+
+  .main-content {
+    background-color: var(--background-color);
+    padding: 24px;
+    transition: background-color 0.3s;
+  }
+
+  .footer-bar {
+    background-color: var(--footer-background);
+    color: var(--info-color);
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+
+  .memo-area {
+    background-color: var(--card-background);
+    border-radius: 40px;
+    padding: 30px;
+    text-align: center;
+    font-size: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+    color: var(--text-color);
   }
   </style>
   

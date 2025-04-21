@@ -6,11 +6,32 @@
      <!-- 中间导航区域 -->
      <div class="nav-center">
        <el-input
+         v-model="searchStore.keyword"
          placeholder="搜索文章"
          size="small"
          prefix-icon="Search"
          class="search-box"
+         @input="searchStore.setKeyword"
+         @focus="searchStore.showResults = true"
        />
+       
+       <!-- 搜索结果下拉框 -->
+       <div v-if="searchStore.showResults && searchStore.keyword" class="search-results">
+         <div v-if="searchStore.searchResults.length === 0" class="no-results">
+           没有找到相关文章
+         </div>
+         <div v-else>
+           <div 
+             v-for="article in searchStore.searchResults" 
+             :key="article.id" 
+             class="search-result-item"
+             @click="handleSearchItemClick(article)"
+           >
+             <h4>{{ article.title }}</h4>
+             <p>{{ article.summary.substring(0, 50) }}...</p>
+           </div>
+         </div>
+       </div>
  
        <el-menu
          mode="horizontal"
@@ -23,7 +44,12 @@
          <el-menu-item index="/home">首页</el-menu-item>
          <el-menu-item index="#">设置</el-menu-item>
          <el-menu-item index="#">联系我</el-menu-item>
-         <el-menu-item index="#">暗黑模式</el-menu-item>
+         <el-menu-item index="#">待办日程</el-menu-item>
+         <el-menu-item index="#" @click="themeStore.toggleDarkMode">
+           <el-icon v-if="themeStore.isDark"><Moon /></el-icon>
+           <el-icon v-else><Sunny /></el-icon>
+           {{ themeStore.isDark ? '亮色模式' : '暗黑模式' }}
+         </el-menu-item>
        </el-menu>
      </div>
  
@@ -47,15 +73,19 @@
  </template>
  
  <script setup>
- import { ref } from 'vue'
+ import { ref, onMounted, onUnmounted } from 'vue'
  import { useRouter } from 'vue-router'
- import { Search, User, SwitchButton } from '@element-plus/icons-vue'
+ import { Search, User, SwitchButton, Moon, Sunny } from '@element-plus/icons-vue'
  import { userProfile } from '../stores/userProfile'
  import { useAuth } from '../stores/auth'
+ import { useTheme } from '../stores/theme'
+ import { useSearch } from '../stores/search'
  import { ElMessageBox } from 'element-plus'
  
  const router = useRouter()
  const auth = useAuth()
+ const themeStore = useTheme()
+ const searchStore = useSearch()
  const activeIndex = ref('/')
  
  const handleSelect = (key) => {
@@ -88,6 +118,33 @@
      // 用户取消了确认
    }
  }
+
+ const handleSearchItemClick = (article) => {
+   searchStore.toggleShowResults(false);
+   searchStore.setKeyword('');
+   // 假设文章详情页的路由是 /article/:id
+   router.push(`/article/${article.id}`)
+ }
+
+ // 点击页面其他区域关闭搜索结果
+ const handleClickOutside = (event) => {
+   const searchBox = document.querySelector('.search-box')
+   const searchResults = document.querySelector('.search-results')
+   
+   if (searchBox && searchResults && 
+       !searchBox.contains(event.target) && 
+       !searchResults.contains(event.target)) {
+     searchStore.toggleShowResults(false);
+   }
+ }
+
+ onMounted(() => {
+   document.addEventListener('click', handleClickOutside)
+ })
+
+ onUnmounted(() => {
+   document.removeEventListener('click', handleClickOutside)
+ })
  </script>
  
  <style scoped>
@@ -96,7 +153,8 @@
    align-items: center;
    justify-content: space-between;
    height: 60px;
-   background: white;
+   background-color: var(--header-background);
+   color: var(--text-color);
    padding: 0 20px;
    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
    z-index: 1000;
@@ -106,6 +164,7 @@
    font-weight: bold;
    flex-shrink: 0;
    margin-right: 20px;
+   color: var(--text-color);
  }
  .nav-center {
    display: flex;
@@ -114,7 +173,8 @@
    flex: 1;
    margin: 0 40px;
    overflow: visible;
-   flex-direction: row-reverse
+   flex-direction: row-reverse;
+   position: relative;
  }
  .search-box {
    width: 200px;
@@ -139,10 +199,48 @@
    flex-grow: 1;
    white-space: nowrap;
    min-width: 400px;
+   background-color: var(--menu-background);
  }
  .el-menu-item {
    font-size: 14px;
    padding: 0 15px !important;
+   color: var(--text-color);
+ }
+ .search-results {
+   position: absolute;
+   top: 40px;
+   right: 0;
+   width: 300px;
+   max-height: 400px;
+   overflow-y: auto;
+   background-color: var(--card-background);
+   color: var(--text-color);
+   border-radius: 4px;
+   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+   z-index: 1001;
+ }
+ .search-result-item {
+   padding: 10px 15px;
+   border-bottom: 1px solid var(--border-color);
+   cursor: pointer;
+ }
+ .search-result-item:hover {
+   background-color: var(--hover-background);
+ }
+ .search-result-item h4 {
+   margin: 0 0 5px 0;
+   font-size: 14px;
+   color: var(--text-color);
+ }
+ .search-result-item p {
+   margin: 0;
+   font-size: 12px;
+   color: var(--info-color);
+ }
+ .no-results {
+   padding: 15px;
+   text-align: center;
+   color: var(--info-color);
  }
  </style>
  

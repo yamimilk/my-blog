@@ -23,7 +23,7 @@ const routes = [
             { path: '', component: HomeContent },
             { path: 'home', component: HomeContent },
             { path: 'gallery', component: Gallery },
-            { path: 'video', component: Video },
+            { path: 'videos', component: Video },
             { path: 'article', component: ArticleList },
             { path: 'profile', component: ProfileEdit }
         ]
