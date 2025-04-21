@@ -5,73 +5,113 @@
     
     <div class="gallery-grid">
       <el-card 
-        v-for="(item, index) in galleries" 
-        :key="index" 
+        v-for="item in galleryItems" 
+        :key="item.id" 
         class="gallery-card" 
         shadow="hover"
+        @click="showImageDetails(item)"
       >
-        <div class="gallery-image" :style="`background-image: url(${item.img})`"></div>
-        <div class="gallery-caption">
-          <p class="gallery-text">{{ item.caption }}</p>
-          <span class="gallery-date">{{ item.date }}</span>
+        <div class="gallery-img-container">
+          <img :src="item.imageUrl" :alt="item.title" class="gallery-img" />
+        </div>
+        
+        <div class="gallery-content">
+          <h3 class="gallery-title">{{ item.title }}</h3>
+          <p class="gallery-desc">{{ item.description }}</p>
+          
+          <div class="gallery-meta">
+            <div class="meta-tags">
+              <el-tag 
+                v-for="tag in item.tags.slice(0, 2)" 
+                :key="tag" 
+                size="small" 
+                effect="plain" 
+                class="meta-tag"
+              >
+                {{ tag }}
+              </el-tag>
+              <span v-if="item.tags.length > 2" class="more-tags">+{{ item.tags.length - 2 }}</span>
+            </div>
+            <div class="meta-info">
+              <span class="meta-date">{{ item.date }}</span>
+              <span class="meta-views">
+                <el-icon><View /></el-icon>
+                {{ item.views }}
+              </span>
+            </div>
+          </div>
         </div>
       </el-card>
     </div>
+    
+    <!-- 图片详情弹窗 -->
+    <el-dialog
+      v-model="dialogVisible"
+      :title="selectedItem?.title"
+      width="70%"
+      center
+      destroy-on-close
+    >
+      <div class="image-detail-container">
+        <img :src="selectedItem?.imageUrl" :alt="selectedItem?.title" class="detail-image" />
+        
+        <div class="detail-content">
+          <h3 class="detail-title">{{ selectedItem?.title }}</h3>
+          <p class="detail-desc">{{ selectedItem?.description }}</p>
+          
+          <div class="detail-meta">
+            <div class="detail-author">
+              <el-icon><User /></el-icon>
+              <span>{{ selectedItem?.author }}</span>
+            </div>
+            <div class="detail-date">
+              <el-icon><Calendar /></el-icon>
+              <span>{{ selectedItem?.date }}</span>
+            </div>
+            <div class="detail-views">
+              <el-icon><View /></el-icon>
+              <span>{{ selectedItem?.views }} 浏览</span>
+            </div>
+          </div>
+          
+          <div class="detail-tags">
+            <el-tag
+              v-for="tag in selectedItem?.tags"
+              :key="tag"
+              effect="plain"
+              class="detail-tag"
+            >
+              {{ tag }}
+            </el-tag>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-// 示例画廊数据，后期可以从后端API获取
-const galleries = [
-  { 
-    id: 1, 
-    caption: '日落西山，余晖满天，美不胜收', 
-    img: 'https://picsum.photos/800/600?random=1',
-    date: '2023-05-15'
-  },
-  { 
-    id: 2, 
-    caption: '雨后初晴，空气清新，心旷神怡', 
-    img: 'https://picsum.photos/800/600?random=2',
-    date: '2023-04-28'
-  },
-  { 
-    id: 3, 
-    caption: '春花烂漫，蜂蝶翩跹，岁月静好', 
-    img: 'https://picsum.photos/800/600?random=3',
-    date: '2023-04-12'
-  },
-  { 
-    id: 4, 
-    caption: '雪落无声，银装素裹，宛如仙境', 
-    img: 'https://picsum.photos/800/600?random=4',
-    date: '2023-03-20'
-  },
-  { 
-    id: 5, 
-    caption: '碧海蓝天，椰影婆娑，心灵净地', 
-    img: 'https://picsum.photos/800/600?random=5',
-    date: '2023-03-05'
-  },
-  { 
-    id: 6, 
-    caption: '城市夜景，灯火阑珊，繁华盛世', 
-    img: 'https://picsum.photos/800/600?random=6',
-    date: '2023-02-18'
-  },
-  { 
-    id: 7, 
-    caption: '青山绿水，鸟语花香，恬淡自然', 
-    img: 'https://picsum.photos/800/600?random=7',
-    date: '2023-02-01'
-  },
-  { 
-    id: 8, 
-    caption: '星空璀璨，银河闪烁，浩渺宇宙', 
-    img: 'https://picsum.photos/800/600?random=8',
-    date: '2023-01-15'
-  }
-]
+import { ref, onMounted } from 'vue'
+import { View, User, Calendar } from '@element-plus/icons-vue'
+import { contentStore } from '../data/store'
+
+// 画廊数据
+const galleryItems = ref([])
+
+// 详情弹窗相关
+const dialogVisible = ref(false)
+const selectedItem = ref(null)
+
+// 显示图片详情
+const showImageDetails = (item) => {
+  selectedItem.value = item
+  dialogVisible.value = true
+}
+
+// 从store加载画廊数据
+onMounted(() => {
+  galleryItems.value = contentStore.gallery.value
+})
 </script>
 
 <style scoped>
@@ -82,7 +122,7 @@ const galleries = [
 .section-title {
   margin-bottom: 30px;
   font-size: 28px;
-  color: #333;
+  color: var(--text-color);
   position: relative;
   padding-left: 15px;
 }
@@ -95,7 +135,7 @@ const galleries = [
   transform: translateY(-50%);
   width: 4px;
   height: 24px;
-  background: #409EFF;
+  background: var(--primary-color);
   border-radius: 2px;
 }
 
@@ -106,61 +146,172 @@ const galleries = [
 }
 
 .gallery-card {
+  height: 100%;
   transition: all 0.3s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
 }
 
 .gallery-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-.gallery-image {
-  height: 250px;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.5s ease;
+.gallery-img-container {
+  height: 200px;
+  overflow: hidden;
+  margin: -20px -20px 15px;
+  position: relative;
 }
 
-.gallery-card:hover .gallery-image {
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.gallery-card:hover .gallery-img {
   transform: scale(1.05);
 }
 
-.gallery-caption {
-  padding: 16px;
+.gallery-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  flex: 1;
 }
 
-.gallery-text {
-  flex: 1;
-  margin: 0;
+.gallery-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.gallery-desc {
+  color: var(--info-color);
   font-size: 14px;
-  color: #303133;
-  white-space: nowrap;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.gallery-date {
+.gallery-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
   font-size: 12px;
-  color: #909399;
-  flex-shrink: 0;
-  margin-left: 10px;
+}
+
+.meta-tags {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-tag {
+  font-size: 11px;
+}
+
+.more-tags {
+  font-size: 11px;
+  color: var(--info-color);
+}
+
+.meta-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--info-color);
+}
+
+.meta-views {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* 详情弹窗样式 */
+.image-detail-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-image {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.detail-content {
+  padding: 20px 0;
+}
+
+.detail-title {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.detail-desc {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.detail-meta {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  color: var(--info-color);
+}
+
+.detail-author, .detail-date, .detail-views {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-tag {
+  font-size: 13px;
+}
+
+@media (min-width: 768px) {
+  .image-detail-container {
+    flex-direction: row;
+    gap: 30px;
+  }
+  
+  .detail-image {
+    width: 50%;
+    margin-bottom: 0;
+  }
+  
+  .detail-content {
+    width: 50%;
+    padding: 0;
+  }
 }
 
 @media (max-width: 768px) {
-  .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-  
-  .gallery-image {
-    height: 200px;
-  }
-}
-
-@media (max-width: 480px) {
   .gallery-grid {
     grid-template-columns: 1fr;
   }

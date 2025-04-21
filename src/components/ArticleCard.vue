@@ -78,7 +78,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Calendar, User, View, Back, Star } from '@element-plus/icons-vue'
-import { articlesData } from '@/data/articles' // 直接导入文章数据
+import { articlesData } from '../data/articles.js' // 直接导入文章数据
 
 const router = useRouter()
 const route = useRoute()

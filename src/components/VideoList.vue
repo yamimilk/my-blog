@@ -5,124 +5,145 @@
     
     <div class="video-grid">
       <el-card 
-        v-for="(item, index) in videos" 
-        :key="index" 
+        v-for="video in videos" 
+        :key="video.id" 
         class="video-card" 
         shadow="hover"
+        @click="showVideoDetails(video)"
       >
-        <div class="video-thumbnail-container">
-          <div class="video-thumbnail" :style="{ backgroundImage: `url(${item.thumbnail})` }">
-            <div class="video-platform-badge" :class="getPlatformClass(item.platform)">
-              <el-icon><component :is="getPlatformIcon(item.platform)" /></el-icon>
-              <span>{{ item.platform }}</span>
-            </div>
-            <a :href="item.url" target="_blank" class="video-play-button">
-              <el-icon><VideoPlay /></el-icon>
-            </a>
+        <div class="video-cover-container">
+          <img :src="video.cover" :alt="video.title" class="video-cover" />
+          <div class="video-overlay">
+            <el-icon class="play-icon"><VideoPlay /></el-icon>
+          </div>
+          <div class="video-source" :class="video.source">
+            {{ getSourceLabel(video.source) }}
           </div>
         </div>
         
         <div class="video-content">
-          <h3 class="video-title">{{ item.title }}</h3>
-          <p class="video-description">{{ item.description }}</p>
+          <h3 class="video-title">{{ video.title }}</h3>
+          <p class="video-summary">{{ video.summary }}</p>
           
-          <div class="video-footer">
-            <div class="video-creator">
-              <el-icon><User /></el-icon>
-              {{ item.creator }}
+          <div class="video-meta">
+            <div class="meta-info">
+              <span class="meta-author">
+                <el-icon><User /></el-icon>
+                {{ video.author }}
+              </span>
+              <span class="meta-date">{{ video.date }}</span>
             </div>
-            <div class="video-date">{{ item.date }}</div>
+            <div class="meta-views">
+              <el-icon><View /></el-icon>
+              {{ video.views }}
+            </div>
+          </div>
+          
+          <div class="video-tags">
+            <el-tag 
+              v-for="tag in video.tags.slice(0, 3)" 
+              :key="tag" 
+              size="small" 
+              effect="plain" 
+              class="video-tag"
+            >
+              {{ tag }}
+            </el-tag>
           </div>
         </div>
       </el-card>
     </div>
+    
+    <!-- 视频详情弹窗 -->
+    <el-dialog
+      v-model="dialogVisible"
+      :title="selectedVideo?.title"
+      width="80%"
+      center
+      destroy-on-close
+    >
+      <div class="video-detail-container">
+        <div class="video-player-container">
+          <iframe 
+            class="video-player"
+            :src="selectedVideo?.videoUrl" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen
+          ></iframe>
+        </div>
+        
+        <div class="video-detail-content">
+          <h3 class="detail-title">{{ selectedVideo?.title }}</h3>
+          <p class="detail-summary">{{ selectedVideo?.summary }}</p>
+          
+          <div class="detail-meta">
+            <div class="detail-source" :class="selectedVideo?.source">
+              {{ getSourceLabel(selectedVideo?.source) }}
+            </div>
+            <div class="detail-author">
+              <el-icon><User /></el-icon>
+              <span>{{ selectedVideo?.author }}</span>
+            </div>
+            <div class="detail-date">
+              <el-icon><Calendar /></el-icon>
+              <span>{{ selectedVideo?.date }}</span>
+            </div>
+            <div class="detail-views">
+              <el-icon><View /></el-icon>
+              <span>{{ selectedVideo?.views }} 浏览</span>
+            </div>
+          </div>
+          
+          <div class="detail-tags">
+            <el-tag
+              v-for="tag in selectedVideo?.tags"
+              :key="tag"
+              effect="plain"
+              class="detail-tag"
+            >
+              {{ tag }}
+            </el-tag>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { User, VideoPlay, Link, Film, Apple } from '@element-plus/icons-vue'
+import { ref, onMounted } from 'vue'
+import { View, User, Calendar, VideoPlay } from '@element-plus/icons-vue'
+import { contentStore } from '../data/store'
 
-// 获取平台图标
-const getPlatformIcon = (platform) => {
-  const icons = {
-    'YouTube': 'VideoPlay',
-    'Bilibili': 'Film',
-    'TikTok': 'Film',
-    'Xigua': 'Film',
-    'NetEase': 'Apple',
-    'Other': 'Link'
-  }
-  return icons[platform] || 'Link'
+// 视频数据
+const videos = ref([])
+
+// 详情弹窗相关
+const dialogVisible = ref(false)
+const selectedVideo = ref(null)
+
+// 显示视频详情
+const showVideoDetails = (video) => {
+  selectedVideo.value = video
+  dialogVisible.value = true
 }
 
-// 获取平台样式类
-const getPlatformClass = (platform) => {
-  return `platform-${platform.toLowerCase()}`
+// 获取来源标签
+const getSourceLabel = (source) => {
+  const sourceMap = {
+    'myself': '原创',
+    'youtube': 'YouTube',
+    'bilibili': 'B站',
+    'other': '其他'
+  }
+  return sourceMap[source] || '未知'
 }
 
-// 示例视频数据，后期可以从后端API获取
-const videos = [
-  {
-    id: 1,
-    title: 'Vue3 组合式API完全指南 - 从入门到精通',
-    description: '本视频详细讲解Vue3组合式API的使用方法，包括响应式系统、生命周期钩子、依赖注入等核心概念。',
-    thumbnail: 'https://picsum.photos/600/400?random=1',
-    url: 'https://www.youtube.com/watch?v=FXpIoQ_rT_c',
-    platform: 'YouTube',
-    creator: '技术学院',
-    date: '2023-05-20'
-  },
-  {
-    id: 2,
-    title: 'Spring Boot 微服务架构实战 - 从零搭建电商平台',
-    description: '从零开始，手把手教你如何使用Spring Boot构建微服务架构的电商平台，涵盖服务注册、配置中心、网关等组件。',
-    thumbnail: 'https://picsum.photos/600/400?random=2',
-    url: 'https://www.bilibili.com/video/BV1LQ4y127n4',
-    platform: 'Bilibili',
-    creator: 'Java架构师',
-    date: '2023-04-15'
-  },
-  {
-    id: 3,
-    title: 'CSS Grid布局精通 - 现代网页布局技术',
-    description: '详解CSS Grid布局的所有属性和用法，通过实际案例演示如何创建复杂的响应式网格布局。',
-    thumbnail: 'https://picsum.photos/600/400?random=3',
-    url: 'https://www.youtube.com/watch?v=9zBsdzdE4sM',
-    platform: 'YouTube',
-    creator: '前端开发者',
-    date: '2023-04-05'
-  },
-  {
-    id: 4,
-    title: 'Git工作流与团队协作 - 企业级开发实践',
-    description: '介绍企业开发中常用的Git工作流程，包括Gitflow、GitHub Flow等，以及如何通过规范提高团队协作效率。',
-    thumbnail: 'https://picsum.photos/600/400?random=4',
-    url: 'https://www.bilibili.com/video/BV1dT411E7LH',
-    platform: 'Bilibili',
-    creator: '程序员小林',
-    date: '2023-03-28'
-  },
-  {
-    id: 5,
-    title: 'JavaScript异步编程 - Promise/Async/Await全解析',
-    description: '彻底讲解JavaScript异步编程的发展历程，从回调地狱到Promise再到Async/Await的完整演进过程。',
-    thumbnail: 'https://picsum.photos/600/400?random=5',
-    url: 'https://www.youtube.com/watch?v=vn3tm0quoqE',
-    platform: 'YouTube',
-    creator: 'JS大神',
-    date: '2023-03-18'
-  },
-  {
-    id: 6,
-    title: 'Docker容器化应用实战 - 从开发到部署',
-    description: '全面介绍Docker的使用方法，包括镜像构建、容器管理、数据卷、网络配置以及在CI/CD流程中的应用。',
-    thumbnail: 'https://picsum.photos/600/400?random=6',
-    url: 'https://www.bilibili.com/video/BV1kv411q7Qc',
-    platform: 'Bilibili',
-    creator: '运维老司机',
-    date: '2023-03-10'
-  }
-]
+// 从store加载视频数据
+onMounted(() => {
+  videos.value = contentStore.videos.value
+})
 </script>
 
 <style scoped>
@@ -133,7 +154,7 @@ const videos = [
 .section-title {
   margin-bottom: 30px;
   font-size: 28px;
-  color: #333;
+  color: var(--text-color);
   position: relative;
   padding-left: 15px;
 }
@@ -146,141 +167,257 @@ const videos = [
   transform: translateY(-50%);
   width: 4px;
   height: 24px;
-  background: #409EFF;
+  background: var(--primary-color);
   border-radius: 2px;
 }
 
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
 }
 
 .video-card {
+  height: 100%;
   transition: all 0.3s ease;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
 }
 
 .video-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-.video-thumbnail-container {
+.video-cover-container {
+  height: 180px;
   position: relative;
   overflow: hidden;
+  margin: -20px -20px 15px;
 }
 
-.video-thumbnail {
-  height: 200px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  transition: transform 0.5s ease;
+.video-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
 }
 
-.video-card:hover .video-thumbnail {
+.video-card:hover .video-cover {
   transform: scale(1.05);
 }
 
-.video-platform-badge {
+.video-overlay {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  border-radius: 4px;
-  font-size: 12px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-.platform-youtube {
-  background: rgba(255, 0, 0, 0.7);
+.video-card:hover .video-overlay {
+  opacity: 1;
 }
 
-.platform-bilibili {
-  background: rgba(0, 174, 236, 0.7);
-}
-
-.platform-tiktok {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-.video-play-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
-  background: rgba(0, 0, 0, 0.7);
+.play-icon {
+  font-size: 50px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
-.video-card:hover .video-play-button {
-  opacity: 1;
+.video-source {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.video-source.myself {
+  background-color: #67c23a;
+}
+
+.video-source.youtube {
+  background-color: #f56c6c;
+}
+
+.video-source.bilibili {
+  background-color: #409eff;
+}
+
+.video-source.other {
+  background-color: #909399;
 }
 
 .video-content {
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .video-title {
   margin: 0 0 10px;
   font-size: 18px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-color);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  height: 2.8em;
 }
 
-.video-description {
-  color: #606266;
+.video-summary {
+  color: var(--info-color);
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 15px;
+  flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.video-footer {
+.video-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
   font-size: 13px;
-  color: #909399;
+  color: var(--info-color);
 }
 
-.video-creator {
+.meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.meta-author, .meta-date, .meta-views {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-@media (max-width: 768px) {
-  .video-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
+.video-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
 }
 
-@media (max-width: 480px) {
+.video-tag {
+  font-size: 11px;
+}
+
+/* 详情弹窗样式 */
+.video-detail-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-player-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.video-detail-content {
+  padding: 0;
+}
+
+.detail-title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.detail-summary {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+  color: var(--info-color);
+}
+
+.detail-source {
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.detail-source.myself {
+  background-color: #67c23a;
+}
+
+.detail-source.youtube {
+  background-color: #f56c6c;
+}
+
+.detail-source.bilibili {
+  background-color: #409eff;
+}
+
+.detail-source.other {
+  background-color: #909399;
+}
+
+.detail-author, .detail-date, .detail-views {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-tag {
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
   .video-grid {
     grid-template-columns: 1fr;
   }

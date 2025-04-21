@@ -7,6 +7,7 @@ import Video from '../components/VideoList.vue'
 import ArticleList from '../components/ArticleList.vue'
 import ArticleCard from '../components/ArticleCard.vue'
 import ProfileEdit from '../components/ProfileEdit.vue'
+import Upload from '../views/Upload.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import Todo from '../views/Todo.vue'
@@ -33,7 +34,8 @@ const routes = [
             { path: 'profile', component: ProfileEdit },
             { path: 'settings', component: Settings },
             { path: 'todo', component: Todo },
-            { path: 'contact', component: Contact }
+            { path: 'contact', component: Contact },
+            { path: 'upload', component: Upload }
         ]
     }
 ]

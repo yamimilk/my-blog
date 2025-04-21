@@ -42,7 +42,7 @@
 <script setup>
 import { User, View } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
-import { articlesData } from '@/data/articles'
+import { articlesData } from '../data/articles'
 import { ref } from 'vue'
 
 const router = useRouter()
