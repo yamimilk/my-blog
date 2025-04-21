@@ -5,6 +5,7 @@ import AppLayout from '../components/AppLayout.vue'
 import HomeContent from '../components/HomeContent.vue'
 import Video from '../components/VideoList.vue'
 import ArticleList from '../components/ArticleList.vue'
+import ArticleCard from '../components/ArticleCard.vue'
 import ProfileEdit from '../components/ProfileEdit.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
@@ -28,6 +29,7 @@ const routes = [
             { path: 'gallery', component: Gallery },
             { path: 'videos', component: Video },
             { path: 'article', component: ArticleList },
+            { path: 'article/:id', component: ArticleCard },
             { path: 'profile', component: ProfileEdit },
             { path: 'settings', component: Settings },
             { path: 'todo', component: Todo },
