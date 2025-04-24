@@ -31,16 +31,6 @@
       </el-col>
     </el-row>
 
-    <!-- 备忘录区域 -->
-    <!-- <div class="memo-wrapper">
-      <el-card class="memo-card" shadow="always">
-        <div class="memo-content">
-          <el-icon class="memo-icon"><Edit /></el-icon>
-          <span class="memo-text">今天要完成：设计画廊页面、备忘录样式优化...</span>
-        </div>
-      </el-card>
-    </div> -->
-
     <!-- 日志记录区域 -->
     <div class="log-wrapper">
       <el-card class="log-card" shadow="hover">

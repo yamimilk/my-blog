@@ -31,7 +31,7 @@ api.interceptors.request.use(config => {
 // 认证方法
 const login = async (username, password, remember = false) => {
   try {
-    // 调用后端API (如果后端尚未准备好，将使用模拟数据)
+    // 调用后端API (后端尚未准备好，将使用模拟数据)
     let response
     try {
       response = await api.post('/auth/login', { username, password })
@@ -90,7 +90,7 @@ const loadUserData = async () => {
   if (!state.isAuthenticated) return null
   
   try {
-    // 调用后端API (如果后端尚未准备好，将使用模拟数据)
+    // 调用后端API (后端尚未准备好，将使用模拟数据)
     let userData
     try {
       const response = await api.get('/users/me')
@@ -133,7 +133,7 @@ const updateUserInfo = async (userData) => {
   if (!state.isAuthenticated) return null
   
   try {
-    // 调用后端API (如果后端尚未准备好，将使用模拟数据)
+    // 调用后端API (后端尚未准备好，将使用模拟数据)
     let response
     try {
       response = await api.put('/users/me', userData)
