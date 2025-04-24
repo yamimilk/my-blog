@@ -7,8 +7,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useTheme } from './stores/theme';
-import UserCard from './components/HomeContent.vue';
-
 const themeStore = useTheme();
 const isDark = themeStore.isDark;
 

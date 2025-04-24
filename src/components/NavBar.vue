@@ -152,7 +152,7 @@ const handleLogout = async () => {
 const handleSearchItemClick = (article) => {
   searchStore.toggleShowResults(false);
   searchStore.setKeyword('');
-  // 假设文章详情页的路由是 /article/:id
+  // 文章详情页的路由是 /article/:id
   router.push(`/article/${article.id}`)
 }
 
