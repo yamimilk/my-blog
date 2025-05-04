@@ -8,7 +8,7 @@
         <el-radio-group v-model="uploadForm.category" class="category-group">
           <el-radio-button label="article">文章</el-radio-button>
           <el-radio-button label="gallery">图片</el-radio-button>
-          <el-radio-button label="video">视频</el-radio-button>
+          <!-- <el-radio-button label="video">视频</el-radio-button> -->
         </el-radio-group>
       </el-form-item>
       
